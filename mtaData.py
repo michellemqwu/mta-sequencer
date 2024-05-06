@@ -2,7 +2,7 @@ from nyct_gtfs import NYCTFeed
 from datetime import datetime, date, time
 from flask import Flask, jsonify
 
-mta_api_key = "VETvY8w70Z5OfAge0SiKj1N93Dxz5ewA28yrdzzi"
+mta_api_key = ""
 
 app = Flask(__name__)
 
