@@ -2,7 +2,7 @@ from nyct_gtfs import NYCTFeed
 from datetime import datetime, date, time
 from flask import Flask, jsonify
 
-mta_api_key = ""
+mta_api_key = "VETvY8w70Z5OfAge0SiKj1N93Dxz5ewA28yrdzzi"
 
 app = Flask(__name__)
 
@@ -14,25 +14,41 @@ def getSubwayData():
     rTrains = rTrainFeed.filter_trips(line_id=["R"], headed_for_stop_id=["A41","A41S","A41N", "R29", "R29S","R29N"], underway=True)
     rTrains = getClosestTrains(rTrains)
     rTrains = getTimeTillArrival(rTrains)
-    results['r'] = rTrains
+    for train in rTrains:
+        if train[0] == 'R29S':
+            results['rs'] = train[1]
+        else:
+            results['rn'] = train[1]
     
     aTrainFeed = NYCTFeed("A", api_key=mta_api_key)
     aTrains = aTrainFeed.filter_trips(line_id=["A"], headed_for_stop_id=["A41","A41S","A41N", "R29", "R29S","R29N"], underway=True)
     aTrains = getClosestTrains(aTrains)
     aTrains = getTimeTillArrival(aTrains)
-    results['a'] = aTrains
+    for train in aTrains:
+        if train[0] == 'A41S':
+            results['as'] = train[1]
+        else:
+            results['an'] = train[1]
 
     cTrainFeed = NYCTFeed("C", api_key=mta_api_key)
     cTrains = cTrainFeed.filter_trips(line_id=["C"], headed_for_stop_id=["A41","A41S","A41N", "R29", "R29S","R29N"], underway=True)
     cTrains = getClosestTrains(cTrains)
     cTrains = getTimeTillArrival(cTrains)
-    results['c'] = cTrains
+    for train in cTrains:
+        if train[0] == 'A41S':
+            results['cs'] = train[1]
+        else:
+            results['cn'] = train[1]
 
     fTrainFeed = NYCTFeed("F", api_key=mta_api_key)
     fTrains = fTrainFeed.filter_trips(line_id=["F"], headed_for_stop_id=["A41","A41S","A41N", "R29", "R29S","R29N"], underway=True)
     fTrains = getClosestTrains(fTrains)
     fTrains = getTimeTillArrival(fTrains)
-    results['f'] = fTrains
+    for train in fTrains:
+        if train[0] == 'A41S':
+            results['fs'] = train[1]
+        else:
+            results['fn'] = train[1]
 
     return jsonify(results), {"Access-Control-Allow-Origin": "*"}
 

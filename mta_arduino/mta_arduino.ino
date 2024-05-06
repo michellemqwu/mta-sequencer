@@ -7,7 +7,7 @@
 char ssid[] = SECRET_SSID;
 char pass[] = SECRET_PASS;
 
-const char serverAddress[] = "10.18.182.246";  // server address
+const char serverAddress[] = "10.18.247.224";  // server address
 int port = 8090;
 bool handDetected = false;
 
@@ -17,6 +17,7 @@ int status = WL_IDLE_STATUS;
 
 void setup() {
   Serial.begin(9600);
+  Serial1.begin(9600);
 
   while (status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
@@ -52,16 +53,15 @@ void loop() {
     Serial.println(ip);
   }
 
-  get();
-  delay(5000);
+  Serial1.println(get());
+  delay(3000);
 }
 
-bool get() {
-  // assemble the path for the GET message:
+String get() {
   String getPath = "/foo";
 
-  // send the GET request
-  // Serial.println("making GET request");
+  //send the GET request
+  Serial.println("making GET request");
   client.get(getPath);
 
   // read the status code and body of the response
@@ -72,18 +72,24 @@ bool get() {
   Serial.print("Response: ");
   Serial.println(response);
 
-  // int labelStart = response.indexOf("content\":");
-  // // find the first { after "content":
-  // int contentStart = response.indexOf("{", labelStart);
-  // // find the following } and get what's between the braces:
-  // int contentEnd = response.indexOf("}", labelStart);
-  // String content = response.substring(contentStart + 1, contentEnd);
-  // Serial.println(content);
+  int ANIndex = response.indexOf("an");
+  int ASIndex = response.indexOf("as");
+  int CNIndex = response.indexOf("cn");
+  int CSIndex = response.indexOf("cs");
+  int FNIndex = response.indexOf("fn");
+  int FSIndex = response.indexOf("fs");
+  int RSIndex = response.indexOf("rs");
+  int RNIndex = response.indexOf("rn");
 
-  // // now get the value after the colon, and convert to an int:
-  // int valueStart = content.indexOf(":");
-  // String valueString = content.substring(valueStart + 1);
-  // int number = valueString.toInt();
-  // bool result = number == 1 ? true : false;
-  return true;
+  String parsedResponse = response.substring(ANIndex + 5, ANIndex + 7) + ",";
+  parsedResponse += response.substring(ASIndex + 5, ASIndex + 7) + ",";
+  parsedResponse += response.substring(CNIndex + 5, CNIndex + 7) + ",";
+  parsedResponse += response.substring(CSIndex + 5, CSIndex + 7) + ",";
+  parsedResponse += response.substring(FNIndex + 5, FNIndex + 7) + ",";
+  parsedResponse += response.substring(FSIndex + 5, FSIndex + 7) + ",";
+  parsedResponse += response.substring(RSIndex + 5, RSIndex + 7) + ",";
+  parsedResponse += response.substring(RNIndex + 5, RNIndex + 7);
+  
+  Serial.println(parsedResponse);
+  return parsedResponse;
 }
